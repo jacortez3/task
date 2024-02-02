@@ -35,6 +35,39 @@ const TaskList = ({ supabase }) => {
     }
   }
 
+  async function updateTask(id) {
+    try {
+      const { data: task, error } = await supabase
+        .from('tasks')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      const newTitle = prompt('Enter new task title', task.title);
+      if (!newTitle.trim()) return;
+
+      const { error: updateError } = await supabase
+        .from('tasks')
+        .update({ title: newTitle })
+        .eq('id', id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      setTasks(
+        tasks.map((task) => (task.id === id ? { ...task, title: newTitle } : task))
+      );
+    } catch (error) {
+      console.error('Error updating task:', error.message);
+    }
+  }
+  
+
   return (
     <div>
       <h2>Task List</h2>
@@ -43,6 +76,7 @@ const TaskList = ({ supabase }) => {
           <li key={task.id}>
             {task.title}
             <button onClick={() => deleteTask(task.id)}>Delete</button>
+            <button onClick={() => updateTask(task.id)}>Actualizar</button>
           </li>
         ))}
       </ul>

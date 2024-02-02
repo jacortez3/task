@@ -12,6 +12,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const App = () => {
   return (
     <div>
+      
       <h1>Task Manager</h1>
       <TaskForm supabase={supabase} />
       <TaskList supabase={supabase} />
